@@ -41,14 +41,21 @@ jobs:
         chmod a+rx ~/.bin/repo
         echo 'export PATH="${HOME}/bin:${PATH}"' >> ~/.bashrc
 
-    - name: Initialize and Sync LineageOS Source
+    - name: Initialize and Sync LineageOS Source (Shallow Clone)
       run: |
         export PATH="${HOME}/bin:${PATH}"
         mkdir -p ~/lineage && cd ~/lineage
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
-        ~/.bin/repo init -u https://github.com/LineageOS/android.git -b lineage-21.0 --git-lfs
-        ~/.bin/repo sync -c -j16 --no-clone-bundle --no-tags
+        
+        # 核心修改：在 repo init 时加入 --depth=1 进行浅克隆，将下载体积缩减 70% 以上
+        ~/.bin/repo init -u https://github.com/LineageOS/android.git -b lineage-21.0 --git-lfs --depth=1
+        
+        # 使用循环重试机制，并将并发数降低为 4，防止网络瞬断引起中断
+        until ~/.bin/repo sync -c -j4 --no-clone-bundle --no-tags; do
+          echo "Sync failed, restarting sync..."
+          sleep 3
+        done
 
     - name: Inject Device Tree and Vendor Blobs
       run: |
