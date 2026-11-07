@@ -10,12 +10,14 @@ jobs:
     - name: Maximize Build Disk Space
       uses: easimon/maximize-build-space@master
       with:
-        root-reserve-mb: 1024
+        root-reserve-mb: 8192
         swap-size-mb: 4096
         remove-dotnet: 'true'
         remove-android: 'true'
         remove-haskell: 'true'
         remove-codeql: 'true'
+        remove-docker: 'true'
+        remove-swift: 'true'
 
     - name: Install Build Dependencies
       run: |
@@ -44,10 +46,10 @@ jobs:
         mkdir -p device/lenovo/TB375FC
         mkdir -p vendor/lenovo/TB375FC
         
-        # 1. 克隆你的设备树仓库（已填入你的用户名）
+        # 1. 克隆你的设备树仓库
         git clone https://github.com/qqwwqqww12qwaszx/android_device_lenovo_TB375FC.git -b main device/lenovo/TB375FC
         
-        # 2. 克隆你的厂商驱动仓库（已填入你的用户名）
+        # 2. 克隆你的厂商驱动仓库
         git clone https://github.com/qqwwqqww12qwaszx/android_vendor_lenovo_TB375FC.git -b main vendor/lenovo/TB375FC
 
     - name: Start Building Super Image
