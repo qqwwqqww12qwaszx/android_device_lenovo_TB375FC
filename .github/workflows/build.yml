@@ -1,7 +1,7 @@
 name: Build LineageOS Super Image
 
 on:
-  workflow_dispatch: # 支持在网页上手动点击按钮触发编译
+  workflow_dispatch:
 
 jobs:
   build:
@@ -33,12 +33,6 @@ jobs:
         sudo apt-get clean
         docker system prune -a --volumes -f || true
         df -h
-
-    - name: Install Build Dependencies
-      run: |
-        # 禁用 apt 下载语言翻译包，节省宝贵的系统盘空间
-        echo 'Acquire::Languages "none";' | sudo tee /etc/apt/apt.conf.d/99no-translations
-        sudo apt update && sudo apt install -y bc bison build-essential curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32z1-dev libelf-dev liblz4-tool libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc yasm zlib1g-dev
 
     - name: Install Repo Tool
       run: |
