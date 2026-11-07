@@ -1,7 +1,7 @@
 name: Build LineageOS Super Image
 
 on:
-  workflow_dispatch: # 支持在网页上手动点击按钮触发编译
+  workflow_dispatch: # 支持 in 网页上手动点击按钮触发编译
 
 jobs:
   build:
@@ -45,15 +45,15 @@ jobs:
         chmod a+rx ~/.bin/repo
         echo 'export PATH="${HOME}/bin:${PATH}"' >> ~/.bashrc
 
-    - name: Initialize and Sync LineageOS Source (Shallow)
+    - name: Initialize and Sync LineageOS Source
       run: |
         export PATH="${HOME}/bin:${PATH}"
         mkdir -p ~/lineage && cd ~/lineage
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
         ~/.bin/repo init -u https://github.com/LineageOS/android.git -b lineage-21.0 --git-lfs
-        # 核心优化：加入 --no-tags --depth=1，只拉取当前最新代码，极大地节省空间和时间
-        ~/.bin/repo sync -c -j16 --no-clone-bundle --no-tags --depth=1
+        # 移除了不支持的 --depth 参数，采用兼容的参数组合
+        ~/.bin/repo sync -c -j16 --no-clone-bundle --no-tags
 
     - name: Inject Device Tree and Vendor Blobs
       run: |
